@@ -111,24 +111,27 @@ export default function Index() {
         </View>
 
         {/* Habits List */}
-        {habits.map((habit) => (
-          <View key={habit.id} style={styles.habitItem}>
-            <View style={styles.habitCheck}>
-              {habit.completed ? (
-                <Ionicons name="checkmark-circle" size={24} color="#34d399" />
-              ) : (
-                <View style={styles.uncheckedCircle} />
-              )}
+        {habits.map((habit, index) => (
+          <View key={habit.id}>
+            <View style={styles.habitItem}>
+              <View style={styles.habitCheck}>
+                {habit.completed ? (
+                  <Ionicons name="checkmark-circle" size={24} color="#34d399" />
+                ) : (
+                  <View style={styles.uncheckedCircle} />
+                )}
+              </View>
+              <View style={styles.habitContent}>
+                <Text style={styles.habitTitle}>
+                  {habit.icon} {habit.title}
+                </Text>
+                <Text style={styles.habitSubtitle}>{habit.subtitle}</Text>
+              </View>
+              <TouchableOpacity style={styles.logButton}>
+                <Text style={styles.logButtonText}>Log</Text>
+              </TouchableOpacity>
             </View>
-            <View style={styles.habitContent}>
-              <Text style={styles.habitTitle}>
-                {habit.icon} {habit.title}
-              </Text>
-              <Text style={styles.habitSubtitle}>{habit.subtitle}</Text>
-            </View>
-            <TouchableOpacity style={styles.logButton}>
-              <Text style={styles.logButtonText}>Log</Text>
-            </TouchableOpacity>
+            {index < habits.length - 1 && <View style={styles.habitSeparator} />}
           </View>
         ))}
       </View>
@@ -309,7 +312,12 @@ const styles = StyleSheet.create({
   habitItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 20,
+    paddingVertical: 20,
+  },
+  habitSeparator: {
+    height: 1,
+    backgroundColor: "#e5e7eb",
+    marginHorizontal: 20,
   },
   habitCheck: {
     marginRight: 12,
