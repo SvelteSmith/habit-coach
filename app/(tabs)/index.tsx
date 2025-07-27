@@ -1,18 +1,11 @@
 import { Text, View, StyleSheet, ScrollView, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
+import { PanGestureHandler, Gesture, GestureDetector } from "react-native-gesture-handler";
+import Animated, { useSharedValue, useAnimatedStyle, withSpring, runOnJS } from "react-native-reanimated";
 
 export default function Index() {
-  const days = [
-    { day: "Sun", date: 4, completed: true },
-    { day: "Mon", date: 5, completed: true },
-    { day: "Tue", date: 6, completed: true },
-    { day: "Wed", date: 7, active: true },
-    { day: "Thu", date: 8 },
-    { day: "Fri", date: 9 },
-    { day: "Sat", date: 10 },
-  ];
-
-  const habits = [
+  const [habits, setHabits] = useState([
     {
       id: 1,
       icon: "🚶",
@@ -34,7 +27,26 @@ export default function Index() {
       subtitle: "Stay hydrated and healthy!",
       completed: false,
     },
+  ]);
+
+  const toggleHabit = (habitId: number) => {
+    setHabits(prevHabits =>
+      prevHabits.map(habit =>
+        habit.id === habitId ? { ...habit, completed: !habit.completed } : habit
+      )
+    );
+  };
+
+  const days = [
+    { day: "Sun", date: 4, completed: true },
+    { day: "Mon", date: 5, completed: true },
+    { day: "Tue", date: 6, completed: true },
+    { day: "Wed", date: 7, active: true },
+    { day: "Thu", date: 8 },
+    { day: "Fri", date: 9 },
+    { day: "Sat", date: 10 },
   ];
+
 
   return (
     <ScrollView style={styles.container}>
@@ -111,29 +123,55 @@ export default function Index() {
         </View>
 
         {/* Habits List */}
-        {habits.map((habit, index) => (
-          <View key={habit.id}>
-            <View style={styles.habitItem}>
-              <View style={styles.habitCheck}>
-                {habit.completed ? (
-                  <Ionicons name="checkmark-circle" size={24} color="#34d399" />
-                ) : (
-                  <View style={styles.uncheckedCircle} />
-                )}
-              </View>
-              <View style={styles.habitContent}>
-                <Text style={styles.habitTitle}>
-                  {habit.icon} {habit.title}
-                </Text>
-                <Text style={styles.habitSubtitle}>{habit.subtitle}</Text>
-              </View>
-              <TouchableOpacity style={styles.logButton}>
-                <Text style={styles.logButtonText}>Log</Text>
-              </TouchableOpacity>
+        {habits.map((habit, index) => {
+          const translateX = useSharedValue(0);
+          
+          const pan = Gesture.Pan()
+            .onUpdate((event) => {
+              translateX.value = Math.min(0, event.translationX);
+            })
+            .onEnd((event) => {
+              if (event.translationX < -100) {
+                runOnJS(toggleHabit)(habit.id);
+              }
+              translateX.value = withSpring(0);
+            });
+
+          const animatedStyle = useAnimatedStyle(() => {
+            return {
+              transform: [{ translateX: translateX.value }],
+            };
+          });
+
+          return (
+            <View key={habit.id}>
+              <GestureDetector gesture={pan}>
+                <Animated.View style={[styles.habitItem, animatedStyle]}>
+                  <View style={styles.habitCheck}>
+                    {habit.completed ? (
+                      <Ionicons name="checkmark-circle" size={24} color="#34d399" />
+                    ) : (
+                      <View style={styles.uncheckedCircle} />
+                    )}
+                  </View>
+                  <View style={styles.habitContent}>
+                    <Text style={[
+                      styles.habitTitle,
+                      habit.completed && styles.completedHabitTitle
+                    ]}>
+                      {habit.icon} {habit.title}
+                    </Text>
+                    <Text style={[
+                      styles.habitSubtitle,
+                      habit.completed && styles.completedHabitSubtitle
+                    ]}>{habit.subtitle}</Text>
+                  </View>
+                </Animated.View>
+              </GestureDetector>
+              {index < habits.length - 1 && <View style={styles.habitSeparator} />}
             </View>
-            {index < habits.length - 1 && <View style={styles.habitSeparator} />}
-          </View>
-        ))}
+          );
+        })}
       </View>
     </ScrollView>
   );
@@ -343,15 +381,11 @@ const styles = StyleSheet.create({
     color: "#6b7280",
     lineHeight: 20,
   },
-  logButton: {
-    backgroundColor: "#f3f4f6",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
+  completedHabitTitle: {
+    textDecorationLine: "line-through",
+    opacity: 0.6,
   },
-  logButtonText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#1f2937",
+  completedHabitSubtitle: {
+    opacity: 0.5,
   },
 });
