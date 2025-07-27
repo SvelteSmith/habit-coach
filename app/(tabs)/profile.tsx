@@ -1,5 +1,7 @@
 import { Text, View, StyleSheet, ScrollView, TouchableOpacity, Image, Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "../../constants/colors";
+import { Typography } from "../../constants/typography";
 
 export default function ProfileScreen() {
   const menuItems = [
@@ -45,7 +47,7 @@ export default function ProfileScreen() {
         <View style={styles.statsGrid}>
           {stats.map((stat, index) => (
             <View key={index} style={styles.statCard}>
-              <Ionicons name={stat.icon as any} size={24} color="#34d399" />
+              <Ionicons name={stat.icon as any} size={24} color="Colors.primary" />
               <Text style={styles.statValue}>{stat.value}</Text>
               <Text style={styles.statLabel}>{stat.label}</Text>
             </View>
@@ -64,7 +66,7 @@ export default function ProfileScreen() {
           <Switch
             value={true}
             onValueChange={() => {}}
-            trackColor={{ false: "#f3f4f6", true: "#34d399" }}
+            trackColor={{ false: "#f3f4f6", true: "Colors.primary" }}
             thumbColor="#fff"
           />
         </View>
@@ -76,7 +78,7 @@ export default function ProfileScreen() {
           <Switch
             value={false}
             onValueChange={() => {}}
-            trackColor={{ false: "#f3f4f6", true: "#34d399" }}
+            trackColor={{ false: "#f3f4f6", true: "Colors.primary" }}
             thumbColor="#fff"
           />
         </View>
@@ -88,7 +90,7 @@ export default function ProfileScreen() {
           <Switch
             value={true}
             onValueChange={() => {}}
-            trackColor={{ false: "#f3f4f6", true: "#34d399" }}
+            trackColor={{ false: "#f3f4f6", true: "Colors.primary" }}
             thumbColor="#fff"
           />
         </View>
@@ -152,7 +154,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     right: 0,
-    backgroundColor: "#34d399",
+    backgroundColor: "Colors.primary",
     width: 28,
     height: 28,
     borderRadius: 14,

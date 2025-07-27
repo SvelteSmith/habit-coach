@@ -1,5 +1,7 @@
 import { Text, View, StyleSheet, ScrollView, TouchableOpacity, TextInput, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "../../constants/colors";
+import { Typography } from "../../constants/typography";
 
 export default function CoachScreen() {
   const messages = [
@@ -47,7 +49,7 @@ export default function CoachScreen() {
 
   const quickActions = [
     { icon: "💡", title: "Get Tips", color: "#3b82f6" },
-    { icon: "🎯", title: "Set Goals", color: "#34d399" },
+    { icon: "🎯", title: "Set Goals", color: "Colors.primary" },
     { icon: "📊", title: "Review Progress", color: "#f59e0b" },
     { icon: "🤔", title: "Ask Question", color: "#8b5cf6" },
   ];
@@ -285,7 +287,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   userMessage: {
-    backgroundColor: "#34d399",
+    backgroundColor: "Colors.primary",
   },
   coachMessage: {
     backgroundColor: "#fff",
@@ -335,7 +337,7 @@ const styles = StyleSheet.create({
     color: "#1f2937",
   },
   sendButton: {
-    backgroundColor: "#34d399",
+    backgroundColor: "Colors.primary",
     width: 44,
     height: 44,
     borderRadius: 22,

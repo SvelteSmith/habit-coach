@@ -3,6 +3,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { PanGestureHandler, Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useSharedValue, useAnimatedStyle, withSpring, runOnJS } from "react-native-reanimated";
+import { Colors } from "../../constants/colors";
+import { Typography } from "../../constants/typography";
 
 export default function Index() {
   const [habits, setHabits] = useState([
@@ -149,7 +151,7 @@ export default function Index() {
                 <Animated.View style={[styles.habitItem, animatedStyle]}>
                   <View style={styles.habitCheck}>
                     {habit.completed ? (
-                      <Ionicons name="checkmark-circle" size={24} color="#34d399" />
+                      <Ionicons name="checkmark-circle" size={24} color={Colors.success} />
                     ) : (
                       <View style={styles.uncheckedCircle} />
                     )}
@@ -180,7 +182,7 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f9fafb",
+    backgroundColor: Colors.background,
   },
   header: {
     padding: 20,
@@ -199,11 +201,11 @@ const styles = StyleSheet.create({
   streakContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: Colors.surface,
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
-    shadowColor: "#000",
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -214,9 +216,8 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   streakCount: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#1f2937",
+    ...Typography.styles.subheading,
+    color: Colors.textPrimary,
   },
   calendar: {
     flexDirection: "row",
@@ -228,45 +229,44 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   dayText: {
-    fontSize: 14,
-    color: "#6b7280",
+    ...Typography.styles.bodySmall,
+    color: Colors.textSecondary,
     marginBottom: 8,
   },
   activeDayText: {
-    color: "#1f2937",
-    fontWeight: "600",
+    ...Typography.styles.label,
+    color: Colors.textPrimary,
   },
   dateCircle: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#e5e7eb",
+    backgroundColor: Colors.border,
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
   },
   completedCircle: {
-    backgroundColor: "#34d399",
+    backgroundColor: Colors.success,
   },
   activeCircle: {
-    backgroundColor: "#1f2937",
+    backgroundColor: Colors.primary,
   },
   dateText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#6b7280",
+    ...Typography.styles.title,
+    color: Colors.textSecondary,
   },
   completedDateText: {
-    color: "#fff",
+    color: Colors.textInverse,
   },
   activeDateText: {
-    color: "#fff",
+    color: Colors.textInverse,
   },
   checkmark: {
     position: "absolute",
     bottom: -2,
     right: -2,
-    backgroundColor: "#059669",
+    backgroundColor: "#16A34A",
     borderRadius: 8,
     width: 16,
     height: 16,
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   coachMessage: {
-    backgroundColor: "#fef3c7",
+    backgroundColor: "#FEF3C7",
     marginHorizontal: 20,
     padding: 16,
     borderRadius: 12,
@@ -292,25 +292,23 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   coachName: {
+    ...Typography.styles.label,
     flex: 1,
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#1f2937",
+    color: Colors.textPrimary,
   },
   closeButton: {
     padding: 4,
   },
   coachText: {
-    fontSize: 14,
-    color: "#1f2937",
-    lineHeight: 20,
+    ...Typography.styles.bodySmall,
+    color: Colors.textPrimary,
   },
   focusSection: {
-    backgroundColor: "#fff",
+    backgroundColor: Colors.surface,
     marginHorizontal: 20,
     borderRadius: 16,
     padding: 20,
-    shadowColor: "#000",
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
@@ -323,29 +321,28 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   focusTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#1f2937",
+    ...Typography.styles.subheading,
+    color: Colors.textPrimary,
   },
   focusSubtitle: {
-    fontSize: 14,
-    color: "#6b7280",
+    ...Typography.styles.bodySmall,
+    color: Colors.textSecondary,
     marginTop: 2,
   },
   progressRing: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#f3f4f6",
+    backgroundColor: Colors.surfaceSecondary,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 3,
-    borderColor: "#fbbf24",
+    borderColor: Colors.primary,
   },
   progressText: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: "#1f2937",
+    ...Typography.styles.caption,
+    fontFamily: Typography.fontFamily.bold,
+    color: Colors.textPrimary,
   },
   habitItem: {
     flexDirection: "row",
@@ -354,7 +351,7 @@ const styles = StyleSheet.create({
   },
   habitSeparator: {
     height: 1,
-    backgroundColor: "#e5e7eb",
+    backgroundColor: Colors.border,
     marginHorizontal: 20,
   },
   habitCheck: {
@@ -365,21 +362,19 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: "#d1d5db",
+    borderColor: Colors.border,
   },
   habitContent: {
     flex: 1,
   },
   habitTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#1f2937",
+    ...Typography.styles.title,
+    color: Colors.textPrimary,
     marginBottom: 4,
   },
   habitSubtitle: {
-    fontSize: 14,
-    color: "#6b7280",
-    lineHeight: 20,
+    ...Typography.styles.bodySmall,
+    color: Colors.textSecondary,
   },
   completedHabitTitle: {
     textDecorationLine: "line-through",

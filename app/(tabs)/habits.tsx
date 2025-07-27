@@ -1,5 +1,7 @@
 import { Text, View, StyleSheet, ScrollView, TouchableOpacity, TextInput } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "../../constants/colors";
+import { Typography } from "../../constants/typography";
 
 export default function HabitsScreen() {
   const habits = [
@@ -134,7 +136,7 @@ export default function HabitsScreen() {
                 </View>
               </View>
               <TouchableOpacity style={styles.resumeButton}>
-                <Ionicons name="play" size={16} color="#34d399" />
+                <Ionicons name="play" size={16} color="Colors.primary" />
               </TouchableOpacity>
             </View>
           </TouchableOpacity>
@@ -163,7 +165,7 @@ const styles = StyleSheet.create({
     color: "#1f2937",
   },
   addButton: {
-    backgroundColor: "#34d399",
+    backgroundColor: "Colors.primary",
     width: 44,
     height: 44,
     borderRadius: 22,
@@ -207,8 +209,8 @@ const styles = StyleSheet.create({
     borderColor: "#e5e7eb",
   },
   activeCategoryChip: {
-    backgroundColor: "#34d399",
-    borderColor: "#34d399",
+    backgroundColor: "Colors.primary",
+    borderColor: "Colors.primary",
   },
   categoryText: {
     fontSize: 14,

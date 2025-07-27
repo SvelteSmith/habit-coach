@@ -8,6 +8,8 @@ import ImageBg from "../components/welcome/image-bg";
 import useDebounce from "../hooks/use-debounce";
 import { ColorProvider, useColors } from "../components/welcome/color-provider";
 import { router } from "expo-router";
+import { Colors } from "../constants/colors";
+import { Typography } from "../constants/typography";
 
 // High-quality images from Unsplash
 const habits = [
@@ -174,20 +176,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   appTitle: {
-    fontSize: 28,
-    fontWeight: "bold",
+    ...Typography.styles.heading,
     color: "#fff",
     marginBottom: 16,
     textAlign: "center",
   },
   habitTitle: {
-    fontSize: 22,
-    fontWeight: "600",
-    color: "#34d399",
+    ...Typography.styles.heading,
+    color: Colors.primary,
     marginBottom: 6,
     textAlign: "center",
   },
   habitSubtitle: {
+    ...Typography.styles.body,
     fontSize: 15,
     color: "rgba(255, 255, 255, 0.8)",
     marginBottom: 20,
@@ -201,26 +202,25 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   featureText: {
-    fontSize: 16,
+    ...Typography.styles.body,
     color: "rgba(255, 255, 255, 0.9)",
-    lineHeight: 24,
   },
   getStartedButton: {
-    backgroundColor: "#34d399",
+    backgroundColor: Colors.primary,
     paddingHorizontal: 48,
     paddingVertical: 16,
     borderRadius: 28,
     width: "80%",
     alignItems: "center",
-    shadowColor: "#34d399",
+    shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
   },
   buttonText: {
+    ...Typography.styles.button,
     fontSize: 18,
-    fontWeight: "600",
-    color: "#fff",
+    color: Colors.textInverse,
   },
 });

@@ -1,5 +1,7 @@
 import { Text, View, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "../../constants/colors";
+import { Typography } from "../../constants/typography";
 
 const { width } = Dimensions.get('window');
 
@@ -29,7 +31,7 @@ export default function ProgressScreen() {
       <View style={styles.header}>
         <Text style={styles.title}>Progress</Text>
         <TouchableOpacity style={styles.exportButton}>
-          <Ionicons name="download-outline" size={20} color="#34d399" />
+          <Ionicons name="download-outline" size={20} color="Colors.primary" />
           <Text style={styles.exportText}>Export</Text>
         </TouchableOpacity>
       </View>
@@ -54,7 +56,7 @@ export default function ProgressScreen() {
           <Text style={styles.statValue}>16</Text>
           <Text style={styles.statLabel}>Completed This Week</Text>
           <View style={styles.statTrend}>
-            <Ionicons name="trending-up" size={16} color="#34d399" />
+            <Ionicons name="trending-up" size={16} color="Colors.primary" />
             <Text style={styles.trendText}>+12%</Text>
           </View>
         </View>
@@ -62,7 +64,7 @@ export default function ProgressScreen() {
           <Text style={styles.statValue}>76%</Text>
           <Text style={styles.statLabel}>Completion Rate</Text>
           <View style={styles.statTrend}>
-            <Ionicons name="trending-up" size={16} color="#34d399" />
+            <Ionicons name="trending-up" size={16} color="Colors.primary" />
             <Text style={styles.trendText}>+5%</Text>
           </View>
         </View>
@@ -78,7 +80,7 @@ export default function ProgressScreen() {
           <Text style={styles.statValue}>127</Text>
           <Text style={styles.statLabel}>Total Completed</Text>
           <View style={styles.statTrend}>
-            <Ionicons name="checkmark-circle" size={16} color="#34d399" />
+            <Ionicons name="checkmark-circle" size={16} color="Colors.primary" />
             <Text style={styles.trendText}>All time</Text>
           </View>
         </View>
@@ -158,7 +160,7 @@ export default function ProgressScreen() {
                 </Text>
               </View>
               {achievement.unlocked && (
-                <Ionicons name="checkmark-circle" size={24} color="#34d399" />
+                <Ionicons name="checkmark-circle" size={24} color="Colors.primary" />
               )}
             </View>
           ))}
@@ -197,7 +199,7 @@ const styles = StyleSheet.create({
   exportText: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#34d399",
+    color: "Colors.primary",
     marginLeft: 4,
   },
   filterContainer: {
@@ -215,8 +217,8 @@ const styles = StyleSheet.create({
     borderColor: "#e5e7eb",
   },
   activeFilterChip: {
-    backgroundColor: "#34d399",
-    borderColor: "#34d399",
+    backgroundColor: "Colors.primary",
+    borderColor: "Colors.primary",
   },
   filterText: {
     fontSize: 14,
@@ -263,7 +265,7 @@ const styles = StyleSheet.create({
   trendText: {
     fontSize: 12,
     fontWeight: "500",
-    color: "#34d399",
+    color: "Colors.primary",
     marginLeft: 4,
   },
   chartContainer: {
@@ -300,7 +302,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   bar: {
-    backgroundColor: "#34d399",
+    backgroundColor: "Colors.primary",
     width: 20,
     borderRadius: 4,
     position: "absolute",
@@ -350,7 +352,7 @@ const styles = StyleSheet.create({
   habitProgressPercentage: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#34d399",
+    color: "Colors.primary",
     marginBottom: 8,
   },
   progressBarContainer: {
@@ -360,7 +362,7 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: 8,
-    backgroundColor: "#34d399",
+    backgroundColor: "Colors.primary",
     borderRadius: 4,
   },
   achievementsContainer: {
