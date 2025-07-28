@@ -129,15 +129,26 @@ function WelcomeContent() {
           </View>
         </View>
         
-        {/* Get Started Button */}
-        <Pressable
-          style={styles.getStartedButton}
-          onPress={() => {
-            router.replace("/(tabs)");
-          }}
-        >
-          <Text style={styles.buttonText}>Get Started</Text>
-        </Pressable>
+        {/* Action Buttons */}
+        <View style={styles.buttonContainer}>
+          <Pressable
+            style={styles.signUpButton}
+            onPress={() => {
+              router.push("/auth/signup" as any);
+            }}
+          >
+            <Text style={styles.signUpButtonText}>Sign Up</Text>
+          </Pressable>
+          
+          <Pressable
+            style={styles.signInButton}
+            onPress={() => {
+              router.push("/auth/login" as any);
+            }}
+          >
+            <Text style={styles.signInButtonText}>Sign In</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -205,12 +216,15 @@ const styles = StyleSheet.create({
     ...Typography.styles.body,
     color: "rgba(255, 255, 255, 0.9)",
   },
-  getStartedButton: {
+  buttonContainer: {
+    width: "100%",
+    gap: 12,
+  },
+  signUpButton: {
     backgroundColor: Colors.primary,
     paddingHorizontal: 48,
     paddingVertical: 16,
     borderRadius: 28,
-    width: "80%",
     alignItems: "center",
     shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 4 },
@@ -218,9 +232,23 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 8,
   },
-  buttonText: {
+  signUpButtonText: {
     ...Typography.styles.button,
     fontSize: 18,
     color: Colors.textInverse,
+  },
+  signInButton: {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    paddingHorizontal: 48,
+    paddingVertical: 16,
+    borderRadius: 28,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.3)",
+  },
+  signInButtonText: {
+    ...Typography.styles.button,
+    fontSize: 18,
+    color: "rgba(255, 255, 255, 0.9)",
   },
 });

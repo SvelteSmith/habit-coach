@@ -1,43 +1,122 @@
-import { Text, View, StyleSheet, ScrollView, TouchableOpacity, Image } from "react-native";
+import { Text, View, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
-import { PanGestureHandler, Gesture, GestureDetector } from "react-native-gesture-handler";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useSharedValue, useAnimatedStyle, withSpring, runOnJS } from "react-native-reanimated";
 import { Colors } from "../../constants/colors";
 import { Typography } from "../../constants/typography";
+import { useHabits } from "../../hooks/use-habits";
+import { useAuth } from "../../contexts/AuthContext";
+import React from "react";
+
+interface HabitItemProps {
+  habit: any;
+  onToggle: (habitId: string) => void;
+  showSeparator: boolean;
+}
+
+function HabitItem({ habit, onToggle, showSeparator }: HabitItemProps) {
+  const translateX = useSharedValue(0);
+  
+  const pan = Gesture.Pan()
+    .activeOffsetX([-10, 10]) // Only activate when horizontal movement is significant
+    .failOffsetY([-5, 5]) // Fail if vertical movement is too much
+    .onUpdate((event) => {
+      // Only allow horizontal movement if it's primarily horizontal
+      const isHorizontalGesture = Math.abs(event.translationX) > Math.abs(event.translationY) * 2;
+      if (isHorizontalGesture) {
+        translateX.value = Math.min(0, event.translationX);
+      }
+    })
+    .onEnd((event) => {
+      const isHorizontalGesture = Math.abs(event.translationX) > Math.abs(event.translationY) * 2;
+      if (isHorizontalGesture && event.translationX < -100) {
+        runOnJS(onToggle)(habit.id);
+      }
+      translateX.value = withSpring(0);
+    });
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: translateX.value }],
+    };
+  });
+
+  return (
+    <View>
+      <GestureDetector gesture={pan}>
+        <Animated.View style={[styles.habitItem, animatedStyle]}>
+          <View style={styles.habitCheck}>
+            {habit.completed ? (
+              <Ionicons name="checkmark-circle" size={24} color={Colors.success} />
+            ) : (
+              <View style={styles.uncheckedCircle} />
+            )}
+          </View>
+          <View style={styles.habitContent}>
+            <Text style={[
+              styles.habitTitle,
+              habit.completed && styles.completedHabitTitle
+            ]}>
+              {habit.icon} {habit.title}
+            </Text>
+            <Text style={[
+              styles.habitSubtitle,
+              habit.completed && styles.completedHabitSubtitle
+            ]}>{habit.subtitle}</Text>
+          </View>
+        </Animated.View>
+      </GestureDetector>
+      {showSeparator && <View style={styles.habitSeparator} />}
+    </View>
+  );
+}
 
 export default function Index() {
-  const [habits, setHabits] = useState([
-    {
-      id: 1,
-      icon: "🚶",
-      title: "Walk for 30 minutes after meals",
-      subtitle: "Achieve daily goal in 2700 steps!",
-      completed: true,
-    },
-    {
-      id: 2,
-      icon: "🥩",
-      title: "Eat 30 grams of protein per meal",
-      subtitle: "Protein helps with satiety, fat loss and glucose regulation",
-      completed: false,
-    },
-    {
-      id: 3,
-      icon: "💧",
-      title: "Drink 8 glass of water",
-      subtitle: "Stay hydrated and healthy!",
-      completed: false,
-    },
-  ]);
+  const { habits, loading, error, toggleHabit } = useHabits();
+  const { user, signOut } = useAuth();
 
-  const toggleHabit = (habitId: number) => {
-    setHabits(prevHabits =>
-      prevHabits.map(habit =>
-        habit.id === habitId ? { ...habit, completed: !habit.completed } : habit
-      )
-    );
+  const handleToggleHabit = async (habitId: string) => {
+    try {
+      await toggleHabit(habitId);
+    } catch (err) {
+      Alert.alert('Error', 'Failed to update habit. Please try again.');
+    }
   };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (err) {
+      Alert.alert('Error', 'Failed to sign out. Please try again.');
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.centered]}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+        <Text style={styles.loadingText}>Loading your habits...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={[styles.container, styles.centered]}>
+        <Text style={styles.errorText}>Error: {error}</Text>
+        <TouchableOpacity 
+          style={styles.retryButton}
+          onPress={() => {
+            // Restart the app or reload habits
+            // For now, we'll just show an alert
+            Alert.alert('Retry', 'Please restart the app to try again');
+          }}
+        >
+          <Text style={styles.retryButtonText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   const days = [
     { day: "Sun", date: 4, completed: true },
@@ -51,17 +130,32 @@ export default function Index() {
 
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView 
+      style={styles.container}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.scrollContent}
+    >
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.profileSection}>
-          <Image
-            source={{ uri: "https://images.unsplash.com/photo-1494790108755-2616b612b742?w=50&h=50&fit=crop&crop=face" }}
-            style={styles.avatar}
-          />
-          <View style={styles.streakContainer}>
-            <Text style={styles.streakIcon}>🔥</Text>
-            <Text style={styles.streakCount}>0</Text>
+          <View style={styles.userInfo}>
+            <Image
+              source={{ uri: "https://images.unsplash.com/photo-1494790108755-2616b612b742?w=50&h=50&fit=crop&crop=face" }}
+              style={styles.avatar}
+            />
+            <View style={styles.userTextInfo}>
+              <Text style={styles.welcomeText}>Welcome back!</Text>
+              <Text style={styles.userEmail}>{user?.email}</Text>
+            </View>
+          </View>
+          <View style={styles.headerActions}>
+            <View style={styles.streakContainer}>
+              <Text style={styles.streakIcon}>🔥</Text>
+              <Text style={styles.streakCount}>0</Text>
+            </View>
+            <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+              <Ionicons name="log-out-outline" size={20} color={Colors.textSecondary} />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -117,64 +211,43 @@ export default function Index() {
         <View style={styles.focusHeader}>
           <View>
             <Text style={styles.focusTitle}>My Focus</Text>
-            <Text style={styles.focusSubtitle}>2 tasks pending</Text>
+            <Text style={styles.focusSubtitle}>
+              {habits.filter(h => !h.completed).length} tasks pending
+            </Text>
           </View>
           <View style={styles.progressRing}>
-            <Text style={styles.progressText}>1/3</Text>
+            <Text style={styles.progressText}>
+              {habits.filter(h => h.completed).length}/{habits.length}
+            </Text>
           </View>
         </View>
 
         {/* Habits List */}
-        {habits.map((habit, index) => {
-          const translateX = useSharedValue(0);
-          
-          const pan = Gesture.Pan()
-            .onUpdate((event) => {
-              translateX.value = Math.min(0, event.translationX);
-            })
-            .onEnd((event) => {
-              if (event.translationX < -100) {
-                runOnJS(toggleHabit)(habit.id);
-              }
-              translateX.value = withSpring(0);
-            });
-
-          const animatedStyle = useAnimatedStyle(() => {
-            return {
-              transform: [{ translateX: translateX.value }],
-            };
-          });
-
-          return (
-            <View key={habit.id}>
-              <GestureDetector gesture={pan}>
-                <Animated.View style={[styles.habitItem, animatedStyle]}>
-                  <View style={styles.habitCheck}>
-                    {habit.completed ? (
-                      <Ionicons name="checkmark-circle" size={24} color={Colors.success} />
-                    ) : (
-                      <View style={styles.uncheckedCircle} />
-                    )}
-                  </View>
-                  <View style={styles.habitContent}>
-                    <Text style={[
-                      styles.habitTitle,
-                      habit.completed && styles.completedHabitTitle
-                    ]}>
-                      {habit.icon} {habit.title}
-                    </Text>
-                    <Text style={[
-                      styles.habitSubtitle,
-                      habit.completed && styles.completedHabitSubtitle
-                    ]}>{habit.subtitle}</Text>
-                  </View>
-                </Animated.View>
-              </GestureDetector>
-              {index < habits.length - 1 && <View style={styles.habitSeparator} />}
-            </View>
-          );
-        })}
+        {habits.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateText}>No habits yet!</Text>
+            <Text style={styles.emptyStateSubtext}>Go to the Habits tab to create your first habit.</Text>
+          </View>
+        ) : (
+          <ScrollView 
+            style={styles.habitsScrollContainer}
+            showsVerticalScrollIndicator={false}
+            nestedScrollEnabled={true}
+          >
+            {habits.map((habit, index) => (
+              <HabitItem 
+                key={habit.id} 
+                habit={habit} 
+                onToggle={handleToggleHabit}
+                showSeparator={index < habits.length - 1}
+              />
+            ))}
+          </ScrollView>
+        )}
       </View>
+      
+      {/* Bottom padding for better scrolling */}
+      <View style={styles.bottomPadding} />
     </ScrollView>
   );
 }
@@ -184,6 +257,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
+  bottomPadding: {
+    height: 100,
+  },
+  habitsScrollContainer: {
+    maxHeight: 300, // Fixed height for the scrollable area
+    flex: 1,
+  },
   header: {
     padding: 20,
     paddingTop: 60,
@@ -192,6 +276,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  userInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  userTextInfo: {
+    marginLeft: 12,
+    flex: 1,
+  },
+  welcomeText: {
+    ...Typography.styles.bodySmall,
+    color: Colors.textSecondary,
+  },
+  userEmail: {
+    ...Typography.styles.label,
+    color: Colors.textPrimary,
+  },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
   },
   avatar: {
     width: 50,
@@ -382,5 +488,47 @@ const styles = StyleSheet.create({
   },
   completedHabitSubtitle: {
     opacity: 0.5,
+  },
+  signOutButton: {
+    padding: 8,
+  },
+  centered: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    ...Typography.styles.body,
+    color: Colors.textSecondary,
+    marginTop: 12,
+  },
+  errorText: {
+    ...Typography.styles.body,
+    color: Colors.error,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  retryButton: {
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    ...Typography.styles.label,
+    color: Colors.textInverse,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyStateText: {
+    ...Typography.styles.subheading,
+    color: Colors.textPrimary,
+    marginBottom: 8,
+  },
+  emptyStateSubtext: {
+    ...Typography.styles.body,
+    color: Colors.textSecondary,
+    textAlign: 'center',
   },
 });
